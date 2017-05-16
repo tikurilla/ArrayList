@@ -4,6 +4,14 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.ListIterator;
 import java.util.Iterator;
+// Нереализованные методы:
+    // clone()
+    // ensureCapacity(int minCapacity)
+        // +lastIndexOf(Object o)
+    // removeRange(int fromIndex, int toIndex)
+    // subList(int fromIndex, int toIndex)
+        // +trimToSize()
+        // +indexOf(Object o)
 
 public class ArrayList<T> implements List<T> {
 
@@ -91,6 +99,33 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
+    public boolean addAll(final int index, final Collection<? extends T> c) {
+        if (c == null) throw new NullPointerException();
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (size == 0 || index == size) {
+            addAll(c);
+        }
+        else {
+            final int tempSize = this.size;
+            T[] mLeft = (T[]) new Object[index];
+            mLeft = Arrays.copyOfRange(m, 0, index);
+            T[] mRight = (T[]) new Object[m.length - index];
+            mRight = Arrays.copyOfRange(m, index, m.length);
+            T[] tempM = (T[]) new Object[m.length + c.size()];
+            m = mLeft;
+            size = index;
+            this.addAll(c);
+            System.arraycopy(m, 0, tempM, 0, index + c.size());
+            System.arraycopy(mRight, 0, tempM, index + c.size(), mRight.length);
+            m = tempM;
+            size = tempSize + c.size();
+        }
+        return true;
+    }
+
+    @Override
     public boolean removeAll(final Collection<?> c) {
         for (final Object item : c) {
             remove(item);
@@ -121,6 +156,14 @@ public class ArrayList<T> implements List<T> {
         return element;
     }
 
+    public void trimToSize() {
+        if (m.length > size) {
+            final T[] tempM = m;
+            m = (T[]) new Object[size];
+            System.arraycopy(tempM, 0, m, 0, size);
+        }
+    }
+
     @Override
     public List<T> subList(final int start, final int end) {
         return null;
@@ -138,15 +181,24 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int lastIndexOf(final Object target) {
-        throw new UnsupportedOperationException();
+        for(int i = size; i >= 0; i--) {
+            if (m[i] == target) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
-    public int indexOf(final Object target) {
-        throw new UnsupportedOperationException();
+    public int indexOf(final Object o) {
+        int currentItem = 0;
+        for (final Object item : this) {
+            if (item==o) return currentItem;
+            currentItem++;
+        }
+        return -1;
     }
 
-    int i = 1;
     @Override
     public void add(final int index, final T element) {
         if (index > size || index < 0) throw new IndexOutOfBoundsException();
@@ -174,11 +226,6 @@ public class ArrayList<T> implements List<T> {
             size++;
 
         }
-    }
-
-    @Override
-    public boolean addAll(final int index, final Collection elements) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
