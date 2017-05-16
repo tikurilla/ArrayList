@@ -17,7 +17,6 @@ public class ArrayListTest {
         listIterator = testInstance.listIterator();
     }
 
-
     @Test
     public void testSizeWhenSizeIs0() throws Exception {
 
@@ -26,7 +25,6 @@ public class ArrayListTest {
 
     @Test
     public void testIsEmptyWhenEmpty() throws Exception {
-
         assertTrue(testInstance.isEmpty());
     }
 
@@ -128,6 +126,108 @@ public class ArrayListTest {
 
         assertTrue(testInstance.contains(3));
         assertTrue(testInstance.contains(4));
+    }
+
+    @Test
+    public  void testAddAllWhenIndexLessZero() throws Exception {
+        testInstance.add(1);
+        testInstance.add(4);
+        testInstance.add(5);
+
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(2);
+        testCollection.add(3);
+        try {
+            testInstance.addAll(-1, testCollection);
+            fail("addAll() do not throw the Exception with index less than 0");
+        } catch (final IndexOutOfBoundsException e) {}
+    }
+
+    @Test
+    public  void testAddAllWhenCollectionIsEmpty() throws Exception {
+        assertTrue(testInstance.isEmpty());
+
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(1);
+        testCollection.add(2);
+
+        testInstance.addAll(0, testCollection);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(2, testInstance.size());
+        assertSame("Index = 1 ",2, testInstance.get(1));
+    }
+
+    @Test
+    public void testAddAllInTheMiddleWhenCollectionIsNotEmpty() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(8);
+        testInstance.add(9);
+        testInstance.add(10);
+
+        assertFalse(testInstance.isEmpty());
+
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(4);
+        testCollection.add(5);
+        testCollection.add(6);
+        testCollection.add(7);
+
+        testInstance.addAll(3, testCollection);
+        assertSame("Index = 0 ",1, testInstance.get(0));
+        assertSame("Index = 3 ",4, testInstance.get(3));
+        assertSame("Index = 9 ",10, testInstance.get(9));
+
+        assertEquals(10,testInstance.size());
+        System.out.println("testInstance[0] = " + testInstance.get(0));
+        System.out.println("testInstance[1] = " + testInstance.get(1));
+        System.out.println("testInstance[9] = " + testInstance.get(9));
+    }
+
+    @Test
+    public void testIndexOf() {
+        testInstance.add(10);
+        testInstance.add(20);
+        testInstance.add(30);
+        testInstance.add(40);
+        testInstance.add(40);
+        testInstance.add(50);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(3, testInstance.indexOf(40));
+    }
+
+    @Test
+    public void testLastIndexOf() {
+        testInstance.add(10);
+        testInstance.add(20);
+        testInstance.add(30);
+        testInstance.add(40);
+        testInstance.add(40);
+        testInstance.add(50);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(4, testInstance.lastIndexOf(40));
+        testInstance.remove(5);
+        testInstance.remove(4);
+        testInstance.remove(3);
+        testInstance.remove(2);
+        testInstance.remove(1);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(0, testInstance.lastIndexOf(10));
+        testInstance.clear();
+        assertTrue(testInstance.isEmpty());
+        assertEquals(-1, testInstance.lastIndexOf(10));
+    }
+
+    @Test
+    public void testIndexOfWhenNoSuchElementInList() {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(-1, testInstance.indexOf(10));
     }
 
     @Test
