@@ -4,14 +4,6 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.ListIterator;
 import java.util.Iterator;
-// Нереализованные методы:
-    // clone()
-    // ensureCapacity(int minCapacity)
-        // +lastIndexOf(Object o)
-    // removeRange(int fromIndex, int toIndex)
-    // subList(int fromIndex, int toIndex)
-        // +trimToSize()
-        // +indexOf(Object o)
 
 public class ArrayList<T> implements List<T> {
 
@@ -80,6 +72,16 @@ public class ArrayList<T> implements List<T> {
             }
         }
         return false;
+    }
+
+    public void removeRange(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || fromIndex >= this.size() || toIndex > this.size() || toIndex < fromIndex) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (toIndex != fromIndex) {
+            System.arraycopy(m, toIndex, m, fromIndex, size - toIndex);
+            size = size - (toIndex - fromIndex);
+        }
     }
 
     @Override
@@ -165,11 +167,6 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    public List<T> subList(final int start, final int end) {
-        return null;
-    }
-
-    @Override
     public ListIterator listIterator() {
         return new ElementsIterator(0);
     }
@@ -197,6 +194,23 @@ public class ArrayList<T> implements List<T> {
             currentItem++;
         }
         return -1;
+    }
+
+    @Override
+    public List<T> subList(final int fromIndex, final int toIndex) {
+        if (fromIndex < 0 || toIndex > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException();
+        }
+        if (fromIndex == toIndex) {
+            return new ArrayList<T>();
+        }
+        final T[] oldM = m;
+        final T[] subM = (T[])new Object[toIndex - fromIndex];;
+        System.arraycopy(m, fromIndex, subM, 0, toIndex - fromIndex);
+        return Arrays.asList(subM);
     }
 
     @Override
@@ -232,6 +246,14 @@ public class ArrayList<T> implements List<T> {
     public T set(final int index, final T element) {
         m[index] = element;
         return element;
+    }
+
+    public void ensureCapacity(int minCapacity) {
+        if (minCapacity > size) {
+            final T[] oldM = m;
+            m = (T[]) new Object[minCapacity];
+            System.arraycopy(oldM, 0, m, 0, size);
+        }
     }
 
     @Override
