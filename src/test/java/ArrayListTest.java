@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import static org.junit.Assert.*;
@@ -129,6 +130,101 @@ public class ArrayListTest {
     }
 
     @Test
+    public void testSubListWhenIndexesOutOfRange() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        try {
+            testInstance.subList(-1, 2);
+            fail("subList do not throw the Exception when fromIndex < 0");
+        } catch (final IndexOutOfBoundsException e) {}
+        try {
+            testInstance.subList(0, testInstance.size() + 1);
+            fail("subList do not throw the Exception when toIndex > size");
+        } catch (final IndexOutOfBoundsException e) {}
+    }
+
+    @Test
+    public void testSubListWhenIndexesEquals() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        List<Integer> subList = new ArrayList<>();
+        subList = testInstance.subList(1, 1);
+        assertTrue(subList.isEmpty());
+    }
+
+    @Test
+    public void testSubList() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        List<Integer> subList = new ArrayList<>();
+        subList = testInstance.subList(1, 3);
+        assertFalse(subList.isEmpty());
+        assertSame("subList[0] = ",2, subList.get(0));
+        assertSame("subList[0] = ",3, subList.get(1));
+        assertEquals(2, subList.size());
+        assertFalse(testInstance.isEmpty());
+        assertSame("testInstance[0] = ",1, testInstance.get(0));
+        assertSame("testInstance[4] = ",5, testInstance.get(4));
+    }
+
+    @Test
+    public void testRemoveRangeWhenIndexOutOfRange() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        try {
+            testInstance.removeRange(-1, 2);
+            fail("removeRange do not throw the Exception when fromIndex < 0");
+        } catch (final IndexOutOfBoundsException e) {}
+        try {
+            testInstance.removeRange(0, testInstance.size() + 1);
+            fail("removeRange do not throw the Exception when toIndex > size");
+        } catch (final IndexOutOfBoundsException e) {}
+    }
+
+    @Test
+    public void removeRangeWhenIndexesEquals() throws Exception {
+        testInstance.add(1);
+        testInstance.add(2);
+        testInstance.add(3);
+        testInstance.add(4);
+        testInstance.add(5);
+        testInstance.removeRange(2, 2);
+        assertFalse(testInstance.isEmpty());
+        assertEquals(5, testInstance.size());
+    }
+
+    @Test
+    public void testRemoveRange() throws Exception {
+        testInstance.add(10);
+        testInstance.add(11);
+        testInstance.add(12);
+        testInstance.add(13);
+        testInstance.add(14);
+        testInstance.add(15);
+        assertEquals(6, testInstance.size());
+        testInstance.removeRange(0, 2);
+        assertEquals(4, testInstance.size());
+        assertSame("testInstance[0] = ",12, testInstance.get(0));
+        assertSame("testInstance[3] = ",15, testInstance.get(3));
+        testInstance.removeRange(1, 2);
+        assertEquals(3, testInstance.size());
+        assertSame("testInstance[0] = ",12, testInstance.get(0));
+        assertSame("testInstance[1] = ",14, testInstance.get(1));
+    }
+
+    @Test
     public  void testAddAllWhenIndexLessZero() throws Exception {
         testInstance.add(1);
         testInstance.add(4);
@@ -180,9 +276,6 @@ public class ArrayListTest {
         assertSame("Index = 9 ",10, testInstance.get(9));
 
         assertEquals(10,testInstance.size());
-        System.out.println("testInstance[0] = " + testInstance.get(0));
-        System.out.println("testInstance[1] = " + testInstance.get(1));
-        System.out.println("testInstance[9] = " + testInstance.get(9));
     }
 
     @Test
